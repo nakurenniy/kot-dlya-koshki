@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Любовь — это…</title>
+<meta name="description" content="Тридцать шесть открыток про нас.">
+<meta name="theme-color" content="#7d0c14">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 28 C6 21 2 15 2 10 C2 6 5 3 9 3 C12 3 14.5 5 16 7.5 C17.5 5 20 3 23 3 C27 3 30 6 30 10 C30 15 26 21 16 28Z' fill='%237d0c14'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Golos+Text:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="sketch" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="3.2"/>
+    </filter>
+    <symbol id="heart" viewBox="0 0 32 30">
+      <path d="M16 28 C6 21 2 15 2 10 C2 6 5 3 9 3 C12 3 14.5 5 16 7.5 C17.5 5 20 3 23 3 C27 3 30 6 30 10 C30 15 26 21 16 28Z"/>
+    </symbol>
+    <symbol id="paw" viewBox="0 0 40 40">
+      <ellipse cx="20" cy="26" rx="9" ry="7.5"/>
+      <ellipse cx="9" cy="15" rx="3.6" ry="4.6"/>
+      <ellipse cx="16" cy="9" rx="3.6" ry="4.8"/>
+      <ellipse cx="24" cy="9" rx="3.6" ry="4.8"/>
+      <ellipse cx="31" cy="15" rx="3.6" ry="4.6"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ================= ОБЛАКО ================= -->
+<section class="cloud" id="cloud" aria-labelledby="title">
+  <div class="stage">
+    <canvas class="hearts" aria-hidden="true"></canvas>
+
+    <header class="bar">
+      <a class="mark" href="#cloud">ты <svg class="mark-heart" aria-hidden="true"><use href="#heart"/></svg> я</a>
+      <nav class="bar-links" aria-label="Разделы">
+        <a href="#stories">Истории</a>
+        <a href="#letter">Письмо</a>
+      </nav>
+    </header>
+
+    <div class="world" id="world"><!-- карточки рисует app.js --></div>
+
+    <div class="intro">
+      <h1 id="title">Любовь — это…</h1>
+      <p class="lead">Тридцать шесть открыток про нас: от арбуза шёпотом на ушко до общего врага‑арендодателя.</p>
+      <a class="btn" href="#cloud" data-fly>Пролететь сквозь все истории</a>
+    </div>
+
+    <button class="cat cat-richie" type="button" aria-label="Погладить Ричи">
+      <svg viewBox="0 0 220 270" aria-hidden="true">
+        <g filter="url(#sketch)">
+          <path class="richie-tail" d="M150 240 C205 238 214 188 190 166 C178 155 166 168 178 178" fill="none" stroke="#1d1517" stroke-width="15" stroke-linecap="round"/>
+          <path d="M150 240 C205 238 214 188 190 166 C178 155 166 168 178 178" fill="none" stroke="#f6e9e7" stroke-opacity=".55" stroke-width="2" stroke-linecap="round" class="richie-tail"/>
+          <path d="M58 252 C42 206 52 156 80 134 L140 134 C168 156 178 206 162 252 Z" fill="#1d1517" stroke="#f6e9e7" stroke-opacity=".55" stroke-width="2.5"/>
+          <g class="richie-head">
+            <path d="M58 76 L50 20 L96 50 Z" fill="#1d1517" stroke="#f6e9e7" stroke-opacity=".55" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M162 76 L170 20 L124 50 Z" fill="#1d1517" stroke="#f6e9e7" stroke-opacity=".55" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M60 64 L57 34 L82 52 Z M160 64 L163 34 L138 52 Z" fill="#c9737c"/>
+            <path d="M48 98 C48 62 74 46 110 46 C146 46 172 62 172 98 C172 128 146 144 110 144 C74 144 48 128 48 98 Z" fill="#1d1517" stroke="#f6e9e7" stroke-opacity=".55" stroke-width="2.5"/>
+            <g class="richie-eyes">
+              <ellipse cx="86" cy="94" rx="14" ry="16" fill="#e8d36a"/>
+              <ellipse cx="134" cy="94" rx="14" ry="16" fill="#e8d36a"/>
+              <g class="pupils"><ellipse cx="86" cy="94" rx="4.5" ry="11" fill="#120c0d"/><ellipse cx="134" cy="94" rx="4.5" ry="11" fill="#120c0d"/><circle cx="90" cy="88" r="2.4" fill="#fff"/><circle cx="138" cy="88" r="2.4" fill="#fff"/></g>
+              <g class="lids"><rect x="68" y="76" width="36" height="36" fill="#1d1517"/><rect x="116" y="76" width="36" height="36" fill="#1d1517"/></g>
+            </g>
+            <path d="M104 114 L116 114 L110 121 Z" fill="#c9737c"/>
+            <path d="M110 121 q-6 9 -13 3 M110 121 q6 9 13 3" fill="none" stroke="#f6e9e7" stroke-opacity=".7" stroke-width="2" stroke-linecap="round"/>
+            <path d="M78 118 L36 110 M78 124 L38 128 M142 118 L184 110 M142 124 L182 128" stroke="#f6e9e7" stroke-opacity=".6" stroke-width="1.6" stroke-linecap="round"/>
+          </g>
+          <path d="M74 146 C96 156 124 156 146 146" fill="none" stroke="#e8d36a" stroke-width="6" stroke-linecap="round"/>
+          <use href="#heart" x="100" y="150" width="20" height="19" fill="#e8d36a"/>
+          <ellipse cx="90" cy="252" rx="18" ry="10" fill="#1d1517" stroke="#f6e9e7" stroke-opacity=".55" stroke-width="2.5"/>
+          <ellipse cx="130" cy="252" rx="18" ry="10" fill="#1d1517" stroke="#f6e9e7" stroke-opacity=".55" stroke-width="2.5"/>
+        </g>
+      </svg>
+      <span class="cat-name">Ричи</span>
+      <span class="purr" aria-hidden="true">мррр</span>
+    </button>
+
+    <p class="hint"><span class="hint-fine">Наведи на открытку, и она поймает свет. Нажми, и она подлетит ближе.</span><span class="hint-touch">Листай вниз, чтобы пролететь сквозь открытки. Нажми на любую, чтобы рассмотреть.</span></p>
+  </div>
+</section>
+
+<!-- ================= ВСЕ ИСТОРИИ ================= -->
+<section class="stories" id="stories" aria-labelledby="stories-title">
+  <div class="paws" aria-hidden="true"></div>
+  <div class="stories-grid">
+    <div class="stories-head">
+      <h2 id="stories-title" class="reveal">Все наши истории</h2>
+      <p class="reveal">Каждая про то, что действительно было. Наведи на строчку, чтобы увидеть открытку, нажми, чтобы открыть её целиком.</p>
+    </div>
+    <ul class="index" id="index"><!-- строки рисует app.js --></ul>
+    <div class="vasya-slot vasya-mob"></div>
+    <div class="preview">
+      <div class="vasya-slot vasya-desk"></div>
+      <div class="preview-card" aria-hidden="true">
+        <div class="preview-imgs"></div>
+        <div class="glare"><i></i></div>
+      </div>
+      <p class="preview-cap" aria-hidden="true"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ПИСЬМО ================= -->
+<section class="letter" id="letter" aria-labelledby="letter-title">
+  <div class="letter-grid">
+    <div class="letter-head">
+      <h2 id="letter-title" class="reveal">Письмо тебе</h2>
+      <p class="reveal">Тридцать шесть открыток про то, что уже случилось. А здесь то, что я хочу сказать сейчас.</p>
+    </div>
+
+    <div class="envelope-wrap reveal">
+      <button class="envelope" type="button" aria-expanded="false" aria-controls="letter-paper">
+        <span class="env-back"></span>
+        <span class="paper" id="letter-paper">
+          <!-- ПИСЬМО: текст живёт здесь. Абзацы — <span class="p">. Отсюда же он копируется в режим чтения. -->
+          <span class="paper-inner">
+            <span class="p paper-hello">От Кота для Кошки.</span>
+            <span class="p">Дорогая моя, сколько раз мы не высыпались, выясняя наши личные границы и недопонимания. Сколько раз нам обоим, вместе и по отдельности, было плохо. Сколько бы ни было классных, весёлых, запоминающихся моментов, которые я бы проживал только с тобой — снова и снова.</span>
+            <span class="p">Мы всегда оставались взрослыми, адекватными и любящими друг друга по‑настоящему людьми, которые желают друг другу только добра и хотят строить своё будущее вместе, несмотря на все трудности на пути.</span>
+            <span class="p paper-strong">Вместе мы сильнее.</span>
+            <span class="p">Я очень сильно тебя люблю, кошка.</span>
+            <span class="p paper-sign">Всегда твой</span>
+          </span>
+        </span>
+        <span class="env-front"></span>
+        <span class="env-flap"></span>
+        <span class="env-seal"><svg aria-hidden="true"><use href="#heart"/></svg></span>
+        <span class="env-label">Открыть письмо</span>
+      </button>
+
+      <button class="cat cat-shusha" type="button" aria-label="Разбудить Шушу">
+        <svg viewBox="0 0 310 170" aria-hidden="true">
+          <g filter="url(#sketch)">
+            <g class="shusha-tail"><path d="M258 146 C296 140 306 106 286 90" fill="none" stroke="#a48f7b" stroke-width="15" stroke-linecap="round"/><path d="M270 143 l6 -10 M284 132 l9 -5 M292 116 l10 0" stroke="#6b5849" stroke-width="4" stroke-linecap="round"/></g>
+            <path d="M44 156 C32 112 72 80 146 82 C218 84 266 104 266 156 Z" fill="#a48f7b" stroke="#3b2a24" stroke-width="2.5"/>
+            <path d="M150 88 c-6 18 -6 34 0 48 M182 92 c-6 18 -6 32 -1 46 M212 98 c-5 16 -5 30 0 42 M240 110 c-4 12 -4 24 0 34" fill="none" stroke="#6b5849" stroke-width="5" stroke-linecap="round"/>
+            <g class="shusha-head">
+              <path d="M40 76 L36 32 L68 58 Z" fill="#a48f7b" stroke="#3b2a24" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M98 58 L118 24 L124 72 Z" fill="#a48f7b" stroke="#3b2a24" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M43 64 L41 42 L58 58 Z M104 58 L115 38 L118 64 Z" fill="#d39aa0"/>
+              <path d="M28 108 C26 74 50 56 80 56 C110 56 130 74 128 106 C126 134 104 148 78 148 C50 148 30 134 28 108 Z" fill="#a48f7b" stroke="#3b2a24" stroke-width="2.5"/>
+              <path d="M70 62 l2 14 M80 60 l0 15 M90 62 l-2 14" stroke="#6b5849" stroke-width="4" stroke-linecap="round"/>
+              <g class="shusha-sleep"><path d="M50 104 q9 7 18 0 M88 104 q9 7 18 0" fill="none" stroke="#3b2a24" stroke-width="3" stroke-linecap="round"/></g>
+              <g class="shusha-awake"><ellipse cx="59" cy="102" rx="9" ry="10" fill="#9cc46b"/><ellipse cx="97" cy="102" rx="9" ry="10" fill="#9cc46b"/><ellipse cx="59" cy="102" rx="3" ry="7.5" fill="#1d1517"/><ellipse cx="97" cy="102" rx="3" ry="7.5" fill="#1d1517"/></g>
+              <path d="M73 118 L83 118 L78 124 Z" fill="#c9737c"/>
+              <path d="M78 124 q-5 7 -10 2 M78 124 q5 7 10 2" fill="none" stroke="#3b2a24" stroke-width="2" stroke-linecap="round"/>
+              <path d="M56 122 L18 116 M56 128 L20 134 M100 122 L138 116 M100 128 L136 134" stroke="#3b2a24" stroke-opacity=".6" stroke-width="1.5" stroke-linecap="round"/>
+            </g>
+            <ellipse cx="64" cy="156" rx="20" ry="9" fill="#a48f7b" stroke="#3b2a24" stroke-width="2.5"/>
+            <ellipse cx="104" cy="157" rx="20" ry="9" fill="#a48f7b" stroke="#3b2a24" stroke-width="2.5"/>
+          </g>
+        </svg>
+        <span class="zzz" aria-hidden="true">z<i>z</i><b>z</b></span>
+        <span class="cat-name">Шуша</span>
+        <span class="purr" aria-hidden="true">мяу?</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ОБОРОТ ОТКРЫТКИ ================= -->
+<footer class="back">
+  <div class="postcard">
+    <div class="pc-left">
+      <h2>Продолжение следует</h2>
+      <p>Сюда будут добавляться новые открытки, как только с нами случится что‑нибудь ещё. А оно обязательно случится.</p>
+    </div>
+    <div class="pc-right">
+      <figure class="stamp"><img src="cards/c31s.webp" width="420" height="630" alt="Та самая фотка на работе" loading="lazy"></figure>
+      <ul class="address">
+        <li><span>Кому:</span> тебе</li>
+        <li><span>От кого:</span> от меня</li>
+        <li><span>Свидетели:</span> Ричи, Шуша и Васька</li>
+        <li><span>Когда:</span> ноябрь 2026</li>
+      </ul>
+    </div>
+    <p class="imprint">Нарисовано про нас, свёрстано с любовью</p>
+  </div>
+</footer>
+
+<!-- ================= ПРОСМОТР ОТКРЫТКИ ================= -->
+<dialog class="viewer" id="viewer" aria-labelledby="viewer-cap">
+  <div class="veil"></div>
+  <div class="viewer-body">
+    <div class="v-card-wrap">
+      <div class="v-card">
+        <img class="v-img" alt="">
+        <div class="glare"><i></i></div>
+      </div>
+    </div>
+    <div class="v-side">
+      <h2 class="v-cap" id="viewer-cap"></h2>
+      <p class="v-orig"></p>
+      <div class="v-nav">
+        <button class="v-btn v-prev" type="button" aria-label="Предыдущая открытка"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 L8 12 L15 19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="v-btn v-next" type="button" aria-label="Следующая открытка"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <button class="v-close" type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+</dialog>
+
+<!-- ================= ЧТЕНИЕ ПИСЬМА ================= -->
+<dialog class="letter-view" id="letter-view" aria-label="Письмо">
+  <div class="veil"></div>
+  <div class="lv-body">
+    <article class="lv-sheet"></article>
+  </div>
+  <button class="v-close lv-close" type="button" aria-label="Сложить письмо обратно"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
