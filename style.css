@@ -128,7 +128,11 @@ h1 { font-size: var(--step-hero); max-width: 12ch; }
 
 .hint { position: absolute; z-index: 4; right: var(--margin); bottom: 24px; max-width: 30ch; font-size: var(--step-small); text-align: right; opacity: 0.86; }
 .hint-touch { display: none; }
-@media (hover: none) { .hint-fine { display: none; } .hint-touch { display: inline; } }
+.hint-touch { font-family: var(--display); font-size: var(--step-tag); line-height: 1; align-items: center; gap: 6px; }
+.hint-arrow { width: 14px; height: 22px; animation: nudge 1.8s var(--ease-in-out) infinite; }
+@keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+@media (hover: none) { .hint-fine { display: none; } .hint-touch { display: inline-flex; } }
+.hint-fine .hint-scroll { display: flex; justify-content: flex-end; margin-top: 12px; }
 
 /* ---- Режим полёта (JS) ---- */
 html.fly .cloud { height: var(--cloud-h, 560vh); }
@@ -237,7 +241,7 @@ html.fly .hint, html.fly .cat-richie { transition: opacity 300ms ease; }
 .envelope.open .paper { transform: translateY(-58%); }
 
 .cat-shusha { position: absolute; z-index: 6; right: -2%; bottom: 0; width: clamp(150px, 17vw, 240px); }
-.cat-shusha .cat-name { left: -6%; bottom: 8%; }
+.cat-shusha .cat-name { left: auto; right: 16%; bottom: -16%; }
 .cat-shusha .purr { left: 20%; top: -24%; }
 .shusha-awake { opacity: 0; transition: opacity 150ms ease; }
 .shusha-sleep { transition: opacity 150ms ease; }
@@ -304,7 +308,7 @@ html.fly .hint, html.fly .cat-richie { transition: opacity 300ms ease; }
 .vasya-mob { display: none; }
 .cat-vasya { width: 100%; transition: transform 160ms var(--ease-out); }
 .cat-vasya:active { transform: scale(0.97); }
-.cat-vasya .cat-name { left: 2%; bottom: 2%; background: var(--ink); color: var(--paper); }
+.cat-vasya .cat-name { left: auto; right: 4%; bottom: -12%; background: var(--ink); color: var(--paper); }
 .cat-vasya .purr { left: 34%; top: -14%; }
 .vasya-body { transform-box: view-box; transform-origin: 160px 138px; animation: belly 3.8s ease-in-out infinite; }
 @keyframes belly { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(1.045); } }
@@ -416,5 +420,5 @@ html.js .index.in li { opacity: 1; transform: none; }
   .paws.in svg { animation: none; opacity: 0.22; }
   .paper, .env-flap { transition-duration: 1ms !important; }
   .vasya-body, .vasya-paw, .vasya-tail { animation: none; }
-  .laser-halo { animation: none; }
+  .laser-halo, .hint-arrow { animation: none; }
 }

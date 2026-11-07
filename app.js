@@ -100,7 +100,6 @@
   let baseBeta = null;
   function onOrient(e) {
     if (e.gamma == null) return;
-    if (!usingGyro) { const ht = document.querySelector('.hint-touch'); if (ht) ht.textContent = 'Наклони телефон, и открытки поймают свет. Нажми на любую, чтобы рассмотреть.'; }
     usingGyro = true;
     if (baseBeta == null) baseBeta = e.beta;
     baseBeta = lerp(baseBeta, e.beta, 0.004);   // медленно подстраиваемся под то, как держат телефон
@@ -189,26 +188,6 @@
     const span = r.height - H;
     return span > 0 ? clamp(-r.top / span, 0, 1) : 0;
   }
-
-  // Кнопка «Пролететь»: плавный автополёт, который отменяется любым скроллом
-  let auto = null;
-  $('[data-fly]').addEventListener('click', e => {
-    e.preventDefault();
-    if (!fly) { world.scrollIntoView({ behavior: 'smooth' }); return; }
-    const start = scrollY, end = cloud.offsetTop + cloud.offsetHeight - H - 2;
-    const dur = Math.min(26000, Math.max(9000, (end - start) * 3.2));
-    const t0 = performance.now();
-    html.style.scrollBehavior = 'auto';
-    const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    const stop = () => { if (auto) { cancelAnimationFrame(auto); auto = null; html.style.scrollBehavior = ''; } removeEventListener('wheel', stop); removeEventListener('touchstart', stop); removeEventListener('keydown', stop); };
-    addEventListener('wheel', stop, { passive: true }); addEventListener('touchstart', stop, { passive: true }); addEventListener('keydown', stop);
-    const tick = now => {
-      const t = Math.min(1, (now - t0) / dur);
-      scrollTo(0, lerp(start, end, ease(t)));
-      if (t < 1) auto = requestAnimationFrame(tick); else stop();
-    };
-    auto = requestAnimationFrame(tick);
-  });
 
   // ---------- Сердечки на фоне ----------
   const cv = $('.hearts'), ctx = cv.getContext('2d');
@@ -744,10 +723,10 @@
           c.ly.t = clamp((light.y.x - sy) / (H * 0.42));
           step(c.lx, dt); step(c.ly, dt);
           const k = 1 + h * 0.5;   // наведённая тянется сильнее
-          // край, ближний к курсору, выходит вперёд: открытка поворачивается к нему лицом
+          // открытка разворачивается лицом к курсору: её плоскость «смотрит» на точку
           c.el.style.transform =
             `translate3d(${c.x.toFixed(1)}px, ${(c.y + bob).toFixed(1)}px, ${(ze + h * 90).toFixed(1)}px) ` +
-            `rotateZ(${(c.rz * (1 - h * 0.6)).toFixed(2)}deg) rotateY(${(c.ry * (1 - h) * 0.5 - c.lx.x * 24 * k).toFixed(2)}deg) rotateX(${(c.ly.x * 18 * k).toFixed(2)}deg) scale(${(1 + h * 0.06).toFixed(3)})`;
+            `rotateZ(${(c.rz * (1 - h * 0.6)).toFixed(2)}deg) rotateY(${(c.ry * (1 - h) * 0.5 + c.lx.x * 24 * k).toFixed(2)}deg) rotateX(${(-c.ly.x * 18 * k).toFixed(2)}deg) scale(${(1 + h * 0.06).toFixed(3)})`;
           // блик: где свет относительно открытки
           const gx = clamp((light.x.x - sx) / (cw * s));
           const gy = clamp((light.y.x - sy) / (cw * 1.5 * s));
