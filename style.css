@@ -159,9 +159,19 @@ html.fly .hint, html.fly .cat-richie { transition: opacity 300ms ease; }
 }
 .index button .thumb { display: none; }
 .index button:active { transform: scale(0.985); transform-origin: 0 50%; }
-@media (hover: hover) and (pointer: fine) {
-  .index:hover button { opacity: 0.3; }
-  .index:hover button:hover, .index button:focus-visible { opacity: 1; }
+@media (hover: hover) and (pointer: fine) and (min-width: 861px) {
+  .index.engaged button { opacity: 0.3; }
+  .index.engaged button.current, .index button:focus-visible { opacity: 1; }
+  .index button { position: relative; }
+  .index button .t { display: inline-block; transition: transform 260ms var(--ease-out); }
+  .index button.current .t { transform: translateX(38px); }
+  .index button::before {
+    content: ""; position: absolute; left: 0; top: 50%; width: 24px; height: 22px; margin-top: -11px;
+    background: var(--ink);
+    clip-path: path("M12 21 C4.5 15.8 1.5 11.3 1.5 7.5 C1.5 4.5 3.8 2.2 6.8 2.2 C9 2.2 10.9 3.7 12 5.6 C13.1 3.7 15 2.2 17.2 2.2 C20.2 2.2 22.5 4.5 22.5 7.5 C22.5 11.3 19.5 15.8 12 21 Z");
+    opacity: 0; transform: scale(0.6); transition: opacity 200ms ease, transform 260ms var(--ease-out);
+  }
+  .index button.current::before { opacity: 1; transform: none; }
 }
 .preview { grid-column: 8 / 13; grid-row: 2; position: sticky; top: 24px; align-self: start; perspective: 900px; padding-top: 118px; }
 .preview-card { position: relative; width: 100%; max-width: 360px; margin-left: auto; aspect-ratio: 2 / 3; border-radius: 8px; overflow: hidden; background: var(--paper-2); box-shadow: var(--lift); will-change: transform; } /* taste-skill-ignore: парящая открытка */
@@ -330,6 +340,43 @@ html.fly .hint, html.fly .cat-richie { transition: opacity 300ms ease; }
 .lv-sheet .paper-sign { font-family: var(--display); font-size: var(--step-row); line-height: 1; text-align: right; margin-top: 1.2em; }
 .lv-close { position: absolute; top: max(20px, env(safe-area-inset-top, 0px)); right: var(--margin); z-index: 3; }
 
+/* ============ Лазер ============ */
+html.laser-on:not(.modal-open), html.laser-on:not(.modal-open) * { cursor: none !important; }
+.laser { position: fixed; left: 0; top: 0; z-index: 9998; pointer-events: none; opacity: 0; transition: opacity 200ms ease; }
+.laser.on { opacity: 1; }
+html.modal-open .laser { opacity: 0; }
+.laser i { position: absolute; left: 0; top: 0; border-radius: 50%; display: block; }
+.laser-dot {
+  width: 10px; height: 10px; margin: -5px 0 0 -5px; background: #ff2a3d;
+  box-shadow: 0 0 0 2px rgba(255, 210, 214, 0.9), 0 0 10px 3px rgba(255, 30, 50, 0.85); /* taste-skill-ignore: свечение лазера и есть предмет */
+  transition: transform 160ms var(--ease-out);
+}
+.laser-halo {
+  width: 64px; height: 64px; margin: -32px 0 0 -32px;
+  background: radial-gradient(circle, rgba(255, 40, 60, 0.32) 0%, rgba(255, 40, 60, 0) 65%); /* taste-skill-ignore: ореол лазера */
+  animation: laser-flicker 1.6s ease-in-out infinite;
+  transition: transform 220ms var(--ease-out);
+}
+@keyframes laser-flicker { 0%,100% { opacity: 0.85; transform: scale(1); } 40% { opacity: 1; transform: scale(1.08); } 70% { opacity: 0.75; transform: scale(0.96); } }
+.laser.over .laser-dot { transform: scale(1.5); }
+.laser.over .laser-halo { transform: scale(1.35); }
+.laser.down .laser-dot { transform: scale(0.75); }
+
+/* Ричи на охоте */
+.cat-richie .pupils ellipse { transform-box: fill-box; transform-origin: 50% 50%; transition: transform 240ms var(--ease-out); }
+.cat-richie.hunt .pupils ellipse { transform: scaleX(2.1) scaleY(0.82); }
+.cat-richie.hunt .richie-tail { animation-duration: 0.9s; }
+.cat-richie svg { transform-origin: 50% 100%; }
+.cat-richie.crouch svg { animation: crouch 650ms ease-in-out; }
+@keyframes crouch {
+  0% { transform: none; }
+  20% { transform: scale(1.04, 0.9) rotate(-3deg); }
+  40% { transform: scale(1.04, 0.9) rotate(3deg); }
+  60% { transform: scale(1.04, 0.9) rotate(-3deg); }
+  80% { transform: scale(1.04, 0.9) rotate(3deg); }
+  100% { transform: scale(1.05, 0.88); }
+}
+
 /* ============ Появления ============ */
 html.js .reveal { opacity: 0; transform: translateY(26px); transition: opacity 700ms ease, transform 800ms var(--ease-out); transition-delay: var(--d, 0ms); }
 html.js .reveal.in { opacity: 1; transform: none; }
@@ -369,4 +416,5 @@ html.js .index.in li { opacity: 1; transform: none; }
   .paws.in svg { animation: none; opacity: 0.22; }
   .paper, .env-flap { transition-duration: 1ms !important; }
   .vasya-body, .vasya-paw, .vasya-tail { animation: none; }
+  .laser-halo { animation: none; }
 }

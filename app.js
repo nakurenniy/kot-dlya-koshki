@@ -141,7 +141,7 @@
       el: b, g: b.querySelector('.glare i'), i,
       x: 0, y: 0, z: -(i * SP + 360),
       rz: ((i * 53) % 17) - 8, ry: ((i * 31) % 21) - 10,
-      ph: i * 1.7, hov: spring(220, 22), hidden: false, op: -1
+      ph: i * 1.7, hov: spring(220, 22), lx: spring(90, 15), ly: spring(90, 15), hidden: false, op: -1
     };
     b.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') c.hov.t = 1; });
     b.addEventListener('pointerleave', () => { c.hov.t = 0; });
@@ -266,6 +266,91 @@
     setTimeout(() => { rHead.style.transform = ''; }, 900);
   });
 
+
+  // ---------- Лазерная указка ----------
+  // Курсор — точка лазера. Ричи охотится, Шуша и Васька просыпаются, когда точка рядом.
+  const laser = { x: -100, y: -100, on: false, still: 0, lastMove: 0, el: null };
+  if (finePointer) {
+    const el = document.createElement('div');
+    el.className = 'laser';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<i class="laser-halo"></i><i class="laser-dot"></i>';
+    document.body.appendChild(el);
+    laser.el = el;
+    html.classList.add('laser-on');
+    const place = () => { el.style.transform = `translate3d(${laser.x}px, ${laser.y}px, 0)`; };
+    addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse') return;
+      if (Math.hypot(e.clientX - laser.x, e.clientY - laser.y) > 4) laser.lastMove = performance.now();
+      laser.x = e.clientX; laser.y = e.clientY;
+      if (!laser.on) { laser.on = true; el.classList.add('on'); }
+      el.classList.toggle('over', !!e.target.closest?.('a, button, .card'));
+      place();     // курсор не должен отставать: позиция ставится сразу, без пружины
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => { laser.on = false; el.classList.remove('on'); });
+    addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') el.classList.add('down'); });
+    addEventListener('pointerup', () => el.classList.remove('down'));
+  }
+  // пока открыт диалог, лазер прячется под его слой — возвращаем обычный курсор
+  const setModal = on => html.classList.toggle('modal-open', on);
+
+  // Охота Ричи
+  const hunt = { state: 'idle', near: 0, cool: 0 };
+  const rPurr = $('.purr', richie);
+  function richieHunt(now, dt) {
+    if (!laser.el || !laser.on || reduce || html.classList.contains('modal-open')) { richie.classList.remove('hunt'); return; }
+    const r = richie.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > H || getComputedStyle(richie).opacity === '0') return;
+    const cx = r.left + r.width * 0.5, cy = r.top + r.height * 0.45;
+    const d = Math.hypot(laser.x - cx, laser.y - cy);
+    const near = d < Math.max(260, r.width * 2.2);
+    richie.classList.toggle('hunt', near);
+    if (hunt.state !== 'idle') return;
+    const still = now - laser.lastMove > 260;
+    hunt.near = near && still && now > hunt.cool ? hunt.near + dt : 0;
+    if (hunt.near > 0.55) pounce(cx, cy);
+  }
+  function pounce(cx, cy) {
+    hunt.state = 'crouch';
+    richie.classList.add('crouch');
+    setTimeout(() => {
+      richie.classList.remove('crouch');
+      hunt.state = 'jump';
+      let dx = laser.x - cx, dy = laser.y - cy;
+      const L = Math.hypot(dx, dy), max = 190;
+      if (L > max) { dx *= max / L; dy *= max / L; }
+      const lift = 70 + Math.min(60, L * 0.25);
+      const a = richie.animate([
+        { transform: 'translate(0,0) rotate(0deg)' },
+        { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - lift}px) rotate(${dx > 0 ? 10 : -10}deg)`, offset: 0.45 },
+        { transform: `translate(${dx}px, ${dy}px) rotate(0deg) scale(1.04, 0.92)`, offset: 0.7 },
+        { transform: `translate(${dx}px, ${dy}px) rotate(0deg) scale(1)`, offset: 0.8 },
+        { transform: 'translate(0,0) rotate(0deg)' }
+      ], { duration: 1500, easing: 'cubic-bezier(0.37,0,0.63,1)' });
+      setTimeout(() => {
+        burst(laser.x, laser.y, 10);
+        rPurr.textContent = 'поймал!';
+        say(richie, 1300);
+      }, 1500 * 0.68);
+      a.onfinish = () => {
+        hunt.state = 'idle'; hunt.near = 0; hunt.cool = performance.now() + 2600;
+        setTimeout(() => { rPurr.textContent = 'мррр'; }, 1400);
+      };
+    }, 650);
+  }
+
+  // Шуша и Васька приоткрывают глаза, если точка рядом
+  function sleepersWatch() {
+    if (!laser.el || !laser.on) return;
+    document.querySelectorAll('.cat-shusha, .cat-vasya').forEach(cat => {
+      if (cat._s && cat.classList.contains('talking')) return;   // уже разбудили кликом
+      const r = cat.getBoundingClientRect();
+      if (!r.width || r.bottom < 0 || r.top > H) return;
+      const d = Math.hypot(laser.x - (r.left + r.width / 2), laser.y - (r.top + r.height / 2));
+      cat.classList.toggle('awake', d < Math.max(170, r.width * 0.9));
+    });
+  }
+
   // ---------- Шуша ----------
   const shusha = $('.cat-shusha');
   shusha.addEventListener('click', () => {
@@ -287,7 +372,7 @@
     if (lvOpen) return;
     lvOpen = true;
     lv.classList.remove('ready', 'closing');
-    lv.showModal();
+    lv.showModal(); setModal(true);
     $('.lv-body', lv).scrollTop = 0;
     if (!reduce) {
       const to = lvSheet.getBoundingClientRect(), from = envPaper.getBoundingClientRect();
@@ -305,7 +390,7 @@
     if (!lvOpen || lv.classList.contains('closing')) return;
     lv.classList.add('closing');
     const done = () => {
-      lv.close(); lv.classList.remove('closing', 'ready'); lvOpen = false;
+      lv.close(); setModal(false); lv.classList.remove('closing', 'ready'); lvOpen = false;
       lvSheet.getAnimations().forEach(a => a.cancel());
       env.setAttribute('aria-expanded', 'false');
       setTimeout(() => env.classList.remove('open'), reduce ? 0 : 120);
@@ -394,27 +479,67 @@
     li.style.setProperty('--d', `${Math.min(i * 30, 900)}ms`);
     li.innerHTML = `<button type="button"><span class="thumb"><img src="${small(s)}" width="420" height="630" alt="" loading="lazy" decoding="async"></span><span class="t">${s.ru}</span></button>`;
     const b = li.firstElementChild;
-    b.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') showPreview(i); });
+    b.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { hoverRow = i; aimEnter(i); } });
+    b.addEventListener('pointerleave', () => { if (hoverRow === i) hoverRow = -1; });
     b.addEventListener('focus', () => showPreview(i));
     b.addEventListener('click', () => openViewer(i, 'index'));
     index.appendChild(li);
     return b;
   });
-  let previewI = -1;
+  // Превью помнит последнюю открытку и никогда не остаётся пустым:
+  // показываем только самый свежий запрос, старые картинки убираем лишь после того, как новая проявилась.
+  let previewI = -1, previewTok = 0, hoverRow = -1;
   function showPreview(i) {
     if (i === previewI) return;
     previewI = i;
-    const img = new Image();
-    img.src = large(STORIES[i]); img.alt = '';
-    previewImgs.appendChild(img);
-    const show = () => requestAnimationFrame(() => {
-      img.classList.add('on');
-      const olds = [...previewImgs.children].filter(n => n !== img);
-      setTimeout(() => olds.forEach(n => n.remove()), 260);
-    });
-    img.decode ? img.decode().then(show, show) : (img.onload = show);
+    const tok = ++previewTok;
+    rows.forEach((b, k) => b.classList.toggle('current', k === i));
     previewCap.textContent = origLine(STORIES[i]);
+    const img = new Image();
+    img.alt = '';
+    img.src = small(STORIES[i]);           // маленькая уже в кэше — проявляется сразу
+    previewImgs.appendChild(img);
+    const show = () => {
+      if (tok !== previewTok) { img.remove(); return; }
+      requestAnimationFrame(() => {
+        img.classList.add('on');
+        [...previewImgs.children].forEach(n => { if (n !== img) { n.classList.remove('on'); setTimeout(() => n.remove(), 260); } });
+        const big = new Image(); big.src = large(STORIES[i]);   // потом тихо подменяем на чёткую
+        big.decode?.().then(() => { if (tok === previewTok) img.src = big.src; }, () => {});
+      });
+    };
+    img.decode ? img.decode().then(show, show) : (img.onload = show);
   }
+
+  // «Прицел» как в двухуровневых меню: пока курсор едет от строчки к открытке, проезжаемые строки выбор не перехватывают
+  const previewBox = $('.preview');
+  const trail = [];
+  addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    trail.push({ x: e.clientX, y: e.clientY, t: performance.now() });
+    if (trail.length > 8) trail.shift();
+  }, { passive: true });
+  function aimingAtPreview() {
+    if (trail.length < 2 || getComputedStyle(previewBox).display === 'none') return false;
+    const r = previewCard.getBoundingClientRect();
+    const cur = trail[trail.length - 1];
+    // начало текущего жеста: самая ранняя точка за последние 120 мс, иначе предыдущая (там курсор стоял перед рывком)
+    const recent = trail.filter(p => p !== cur && cur.t - p.t < 120);
+    const prev = recent.length ? recent[0] : trail[trail.length - 2];
+    if (cur.x <= prev.x) return false;
+    const top = { x: r.left, y: r.top - 120 }, bottom = { x: r.left, y: r.bottom + 120 };
+    const slope = (a, b) => (b.y - a.y) / (b.x - a.x || 0.001);
+    return slope(cur, top) < slope(prev, top) && slope(cur, bottom) > slope(prev, bottom);
+  }
+  let aimT = null;
+  function aimEnter(i) {
+    clearTimeout(aimT);
+    if (!aimingAtPreview()) { showPreview(i); return; }
+    aimT = setTimeout(() => { if (hoverRow === i) aimEnter(i); }, 200);  // задержался на строке — значит, выбрал её
+  }
+  const storiesGrid = $('.stories-grid');
+  storiesGrid.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') index.classList.add('engaged'); });
+  storiesGrid.addEventListener('pointerleave', () => index.classList.remove('engaged'));
   showPreview(0);
   const pv = { x: spring(140, 18), y: spring(140, 18) };
   $('.stories').addEventListener('pointermove', e => {
@@ -486,7 +611,7 @@
     vt.x.x = vt.y.x = vt.x.v = vt.y.v = 0;
     vcard.style.transform = '';
     dlg.classList.remove('ready', 'closing');
-    dlg.showModal();
+    dlg.showModal(); setModal(true);
     const src = sourceEl(i);
     if (!reduce && src && visible(src)) {
       if (mode === 'cloud') cards[i].hidden = true;
@@ -500,7 +625,7 @@
     dlg.classList.add('closing');
     const src = sourceEl(cur);
     const done = () => {
-      dlg.close(); dlg.classList.remove('closing', 'ready');
+      dlg.close(); setModal(false); dlg.classList.remove('closing', 'ready');
       cards.forEach(c => { c.hidden = false; });
       vcard.getAnimations().forEach(a => a.cancel());
       vOpen = false;
@@ -583,6 +708,7 @@
       eye.y.t = clamp((light.y.x - ey) / (H * 0.5)) * 3.2;
       step(eye.x, dt); step(eye.y, dt);
       pupils.setAttribute('transform', `translate(${eye.x.x.toFixed(2)} ${eye.y.x.toFixed(2)})`);
+      richieHunt(now, dt);
 
       if (fly) {
         const p = cloudProgress();
@@ -596,7 +722,6 @@
         bar.style.opacity = ho.toFixed(3);
         bar.style.visibility = ho < 0.01 ? 'hidden' : '';
         const fogFar = lerp(-1200, -2900, clamp(p / 0.04, 0, 1));
-        const tx = tilt.x.x, ty = tilt.y.x;
         for (const c of cards) {
           step(c.hov, dt);
           const ze = c.z + cam.x;
@@ -612,18 +737,26 @@
           if (Math.abs(op - c.op) > 0.004) { c.el.style.opacity = op.toFixed(3); c.op = op; }
           const bob = Math.sin(t * 0.9 + c.ph) * 9;
           const h = c.hov.x;
-          c.el.style.transform =
-            `translate3d(${c.x.toFixed(1)}px, ${(c.y + bob).toFixed(1)}px, ${(ze + h * 90).toFixed(1)}px) ` +
-            `rotateZ(${(c.rz * (1 - h * 0.6)).toFixed(2)}deg) rotateY(${(c.ry * (1 - h) + tx * 16).toFixed(2)}deg) rotateX(${(-ty * 12).toFixed(2)}deg) scale(${(1 + h * 0.06).toFixed(3)})`;
-          // блик: где свет относительно открытки на экране
+          // где открытка на экране — и куда ей смотреть
           const s = P / Math.max(80, P - ze);
           const sx = W / 2 + c.x * s, sy = H / 2 + (c.y + bob) * s;
-          const gx = clamp((light.x.x - sx) / (cw * s) - tx * 0.35);
-          const gy = clamp((light.y.x - sy) / (cw * 1.5 * s) - ty * 0.35);
+          c.lx.t = clamp((light.x.x - sx) / (W * 0.42));
+          c.ly.t = clamp((light.y.x - sy) / (H * 0.42));
+          step(c.lx, dt); step(c.ly, dt);
+          const k = 1 + h * 0.5;   // наведённая тянется сильнее
+          // край, ближний к курсору, выходит вперёд: открытка поворачивается к нему лицом
+          c.el.style.transform =
+            `translate3d(${c.x.toFixed(1)}px, ${(c.y + bob).toFixed(1)}px, ${(ze + h * 90).toFixed(1)}px) ` +
+            `rotateZ(${(c.rz * (1 - h * 0.6)).toFixed(2)}deg) rotateY(${(c.ry * (1 - h) * 0.5 - c.lx.x * 24 * k).toFixed(2)}deg) rotateX(${(c.ly.x * 18 * k).toFixed(2)}deg) scale(${(1 + h * 0.06).toFixed(3)})`;
+          // блик: где свет относительно открытки
+          const gx = clamp((light.x.x - sx) / (cw * s));
+          const gy = clamp((light.y.x - sy) / (cw * 1.5 * s));
           c.g.style.transform = `translate(${(gx * 50).toFixed(1)}%, ${(gy * 50).toFixed(1)}%)`;
         }
       }
     }
+
+    if (!vOpen && laser.on) sleepersWatch();
 
     if (storiesOn && !vOpen) {
       if (!finePointer) { pv.x.t = tilt.x.x; pv.y.t = tilt.y.x; }
